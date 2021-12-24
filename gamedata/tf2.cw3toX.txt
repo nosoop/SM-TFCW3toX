@@ -1,0 +1,75 @@
+"Games"
+{
+	"tf"
+	{
+		"Functions"
+		{
+			"CBaseCombatCharacter::Weapon_Detach()"
+			{
+				"signature"		"CBaseCombatCharacter::Weapon_Detach()"
+				"callconv"		"thiscall"
+				"return"		"void"
+				"this"			"entity"
+				"arguments"
+				{
+					"weapon"
+					{
+						"type"	"cbaseentity"
+					}
+				}
+			}
+			"CBasePlayer::EquipWearable()"
+			{
+				"offset"		"CBasePlayer::EquipWearable()"
+				"hooktype"		"entity"
+				"return"		"void"
+				"this"			"entity"
+				"arguments"
+				{
+					"wearable"
+					{
+						"type"	"cbaseentity"
+					}
+				}
+			}
+			"CBasePlayer::RemoveWearable()"
+			{
+				"offset"		"CBasePlayer::RemoveWearable()"
+				"hooktype"		"entity"
+				"return"		"void"
+				"this"			"entity"
+				"arguments"
+				{
+					"wearable"
+					{
+						"type"	"cbaseentity"
+					}
+				}
+			}
+		}
+		"Offsets"
+		{
+			"CBasePlayer::EquipWearable()"
+			{
+				"windows"	"434"
+				"linux"		"435"
+			}
+			"CBasePlayer::RemoveWearable()"
+			{
+				"windows"	"435"
+				"linux"		"436"
+			}
+		}
+		"Signatures"
+		{
+			"CBaseCombatCharacter::Weapon_Detach()"
+			{
+				// middle of three calls in a block before the end of a function containing
+				// string "CTFBotSpawner::AddItemToBot"
+				"library"	"server"
+				"linux"		"@_ZN20CBaseCombatCharacter13Weapon_DetachEP17CBaseCombatWeapon"
+				"windows"	"\x55\x8B\xEC\x51\x53\x8B\x1D\x2A\x2A\x2A\x2A\x8B\xC1"
+			}
+		}
+	}
+}
