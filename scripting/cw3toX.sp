@@ -43,7 +43,8 @@ public void OnPluginStart() {
 		SetFailState("Failed to load gamedata (tf2.cw3toX).");
 	}
 	
-	Handle dtWeaponDetach = DHookCreateFromConf(hGameConf, "CBaseCombatCharacter::Weapon_Detach()");
+	Handle dtWeaponDetach = DHookCreateFromConf(hGameConf,
+			"CBaseCombatCharacter::Weapon_Detach()");
 	if (!dtWeaponDetach) {
 		SetFailState("Failed to create detour " ... "CBaseCombatCharacter::Weapon_Detach()");
 	}
@@ -94,56 +95,36 @@ public void OnClientPutInServer(int client) {
 }
 
 void OnWeaponEquipPost(int client, int weapon) {
-	int slot = TF2Util_GetWeaponSlot(weapon);
-	if (slot < 0 || slot > CW3_LAST_SLOT) {
-		return;
-	}
-	
-	ProcessEquippedItem(client, weapon, slot);
+	ProcessEquippedItem(client, weapon);
 }
 
 MRESReturn OnPlayerWeaponRemoved(int client, DHookParam hParams) {
 	int weapon = hParams.Get(1);
-	if (!IsValidEntity(weapon)) {
-		return;
-	}
-	
-	int slot = TF2Util_GetWeaponSlot(weapon);
-	if (slot < 0 || slot > CW3_LAST_SLOT) {
-		return;
-	}
-	
-	// this is a weapon for sure - we need some separate handling for wearables
-	CallCW3WeaponRemoved(client, slot);
+	ProcessRemovedItem(client, weapon);
+	return MRES_Ignored;
 }
 
 MRESReturn OnPlayerWearableEquipped(int client, DHookParam hParams) {
 	int wearable = hParams.Get(1);
-	int itemdef = GetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex");
-	
-	// hack: we assume this slot matches the weapon slot it would be in
-	int slot = TF2Econ_GetItemDefaultLoadoutSlot(itemdef);
-	
-	if (0 <= slot < 3) {
-		ProcessEquippedItem(client, wearable, slot);
-	}
+	ProcessEquippedItem(client, wearable);
 	return MRES_Ignored;
 }
 
 MRESReturn OnPlayerWearableRemoved(int client, DHookParam hParams) {
 	int wearable = hParams.Get(1);
-	int itemdef = GetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex");
-	
-	// hack: we assume this slot matches the weapon slot it would be in
-	int slot = TF2Econ_GetItemDefaultLoadoutSlot(itemdef);
-	
-	if (0 <= slot < 3) {
-		CallCW3WeaponRemoved(client, slot);
-	}
+	ProcessRemovedItem(client, wearable);
 	return MRES_Ignored;
 }
 
-void ProcessEquippedItem(int client, int item, int slot) {
+/**
+ * Handles an item that was equipped by a player.  Item can be a weapon or cosmetic.
+ */
+void ProcessEquippedItem(int client, int item) {
+	int slot = GetItemWeaponSlot(item);
+	if (slot < 0 || slot > CW3_LAST_SLOT) {
+		return;
+	}
+	
 	char uid[64];
 	if (CWX_GetItemUIDFromEntity(item, uid, sizeof(uid))) {
 		KeyValues attributeData = CWX_GetItemExtData(uid, "cw3_attributes");
@@ -165,6 +146,38 @@ void ProcessEquippedItem(int client, int item, int slot) {
 			delete attributeData;
 		}
 	}
+	// TODO maybe support CW3 here? I think they should be initialized at this point
+}
+
+/**
+ * Handles an item that has been removed from a player.
+ */
+void ProcessRemovedItem(int client, int item) {
+	int slot = GetItemWeaponSlot(item);
+	if (slot < 0 || slot > CW3_LAST_SLOT) {
+		return;
+	}
+	
+	CallCW3WeaponRemoved(client, slot);
+}
+
+/**
+ * Returns the weapon slot associated with an item.  Custom Weapons 3 attributes depend on
+ * wearables being in the slot that would normally be occupied by a weapon.
+ */
+int GetItemWeaponSlot(int item) {
+	if (!IsValidEntity(item)) {
+		return -1;
+	} else if (TF2Util_IsEntityWearable(item)) {
+		int itemdef = GetEntProp(item, Prop_Send, "m_iItemDefinitionIndex");
+		
+		// hack: we assume this slot matches the weapon slot it would be in
+		// normally you shouldn't mix loadout slots and weapon slots
+		return TF2Econ_GetItemDefaultLoadoutSlot(itemdef);
+	} else if (TF2Util_IsEntityWeapon(item)) {
+		return TF2Util_GetWeaponSlot(item);
+	}
+	return -1;
 }
 
 bool CallCW3AddAttribute(int client, int slot, const char[] attrib, const char[] plugin,
