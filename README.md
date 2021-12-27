@@ -57,7 +57,7 @@ There is no guarantee that all Custom Weapons 3 attributes will work flawlessly 
 plugin.  Any attribute plugins that are timing-dependent (e.g. depending on certain things being
 available during certain game events / callbacks) may be broken.
 
-CW3 attribute plugins are force-unloaded / reloaded when this plugin is; instead,
+CW3 attribute plugins are *not* force-unloaded / reloaded when this plugin is; instead,
 `CW3_OnWeaponRemoved` is called on all slots.
 
 ## Building
