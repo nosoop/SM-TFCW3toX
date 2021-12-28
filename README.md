@@ -7,8 +7,12 @@ Allows use of Custom Weapons 3 attributes in [Custom Weapons X][].
 - [Custom Weapons X][] (X.0.8 rr-50 or newer).
   - This plugin depends on "extended data" functionality.
 - Custom Weapons 3: Attributes Module (`cw3/modules/cw3-attributes.smx`) *must be unloaded*.
-This plugin reimplements the module's native functionality for Custom Weapons X.
+This plugin reimplements the module's native functionality for Custom Weapons X (native names
+can only be used by one plugin; you can't run both plugins at the same time).
   - This does mean that Custom Weapons 3 will no longer apply CW3 attributes for weapons.
+  - If you unload the CW3 attributes module on a live server, make sure that all the attributes
+  are loaded back in while running this plugin.  (If unsure, delete
+  `cw3/modules/cw3-attributes.smx` and restart the server.)
 
 [Custom Weapons X]: https://github.com/nosoop/SM-TFCustomWeaponsX
 
