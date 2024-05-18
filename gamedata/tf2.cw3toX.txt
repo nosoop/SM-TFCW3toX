@@ -68,7 +68,7 @@
 				// string "CTFBotSpawner::AddItemToBot"
 				"library"	"server"
 				"linux"		"@_ZN20CBaseCombatCharacter13Weapon_DetachEP17CBaseCombatWeapon"
-				"windows"	"\x55\x8B\xEC\x51\x53\x8B\x1D\x2A\x2A\x2A\x2A\x8B\xC1\x56\x57\x8B\x7D\x08"
+				"windows"	"\x55\x8B\xEC\x51\x53\x8B\xD9\x56\x57\x8B\x7D\x08\x33\xF6"
 			}
 		}
 	}
