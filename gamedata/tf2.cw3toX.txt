@@ -51,13 +51,13 @@
 		{
 			"CBasePlayer::EquipWearable()"
 			{
-				"windows"	"438"
-				"linux"		"439"
+				"windows"	"439"
+				"linux"		"440"
 			}
 			"CBasePlayer::RemoveWearable()"
 			{
-				"windows"	"439"
-				"linux"		"440"
+				"windows"	"440"
+				"linux"		"441"
 			}
 		}
 		"Signatures"
